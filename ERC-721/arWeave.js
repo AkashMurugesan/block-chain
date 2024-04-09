@@ -1,0 +1,39 @@
+const Arweave = require("arweave");
+const fs = require("fs");
+
+// If you want to connect directly to a node
+const arweave = Arweave.init({
+  host: "127.0.0.1",
+  port: 1984,
+  protocol: "http",
+});
+
+async function a() {
+  const key = {
+    kty: "RSA",
+    n: "utYSRPUwQAPZf8SAmD11lHRy98WUcrqMl2mJt2Rjct7KUttDtitPKjB_2kdTHkbRtNa6R2UVc6rPOSD9g7ZvT0FnwUioH3EdHy_Wpwo9M6A7J_76yb4OZiRoG3aGwUCKN-hinYJ8U9eVjRhGzGCmJuq9c3ps9bPTwyVyfZTiLPcQ8DIrR94PnYvSz4VVVa-EHkyVG7Bbs8wPQXJpsskw23YjcwcXe_2K21O9FQ2jDk3v3auOn7ioqZtlL7MXkJ73ywOYlIoblm_Hnu46NzAtRkKN_DM4_LqgPejsGuWW8JDAKjfV3DMHSN7BpGCtoG8tNj04EOAyfMQnlPp8nDwWzG_HwKR4JRSK3SW5i97j_gtBxkgir8U-3uD_N3tb3eRv2qb1YudvhEuac8pYQXJFFddIuJIcULlHX4h2RJjnsS1XBPcIfKxWJmaucJ8MuBxpz6kFlGKASsYS-JMbUvkU-BZT7ptUdJHP4zkK2UOYTeEuAF3zGTOX98Ig5LY050CwfbRPTPbLIMWwYLIW0O4AZiJPF20VP-bxAh_bUqX3cyrlleYVmiIHIgWtWxBKrzFGuUI3ok6BMtDHvlv4vLsx0GEJJE31DdUjw8hupAEwZ-nC0xU17LsOA2WFdB1VYjJ1PnDD-dbZypSuB_aYojpTeORqH2ew29BDqwFJpbvM-j8",
+    e: "AQAB",
+    d: "YWwQmK51G1wmhG31U-zwK5nQ_QukjXJiru0UJ3GMPbCYNT4p_4pzvB8P-8SnPalV3gL9nQ7Dcc3GQhbGunBdeCk1rd5x8_sqYUGznuRC53GMhx14rcuRfIdNVcynFYvOxrpA-bq5k4pda_YVrKpU2QQcB2P1_uRm7mHPYlZI3YNy7JxsXwwWfmMTaKwww_5CWP473fVGy-kCp3C-VsB73mOqtmcjQr8BMb5nYNv8gw_2nFLBit1h7RafW5D6H6oUsWJNpF6jZf0hTOkRqAdSBEnd-XzIIVg7CC01OA0xeH0yBpGYzTo6eS_WLx1OS9LM83RWkM4m5VHvBcrbQShABjKwsXAMY4GkNynhSuNJVQUaLt3UoH-W2YqJ6a5UQ8WW_dp9UexyarCouQ6HjfelIADSM6PUSlBuIUo0ihKVRpzAzj7dk4GzoSKGetPkF0IXNPN-vgHlvJjliO-AtUT6J89G97cFKnWlolRvBcnSqL7vJ34J5biq9VdvZrCskFHOJ0jyXgGHzclvp05sUmMxPlSce89dV3dZHOSiwxXys2F6_kQV-CKam71MAlu_gyCI2iaqXjy53xqtdKOWojpSyb5N8cUFMKomWlLMaiYrhAZ3VuJ57CLoFzcqYf2wxSB0tYDp2R2Cx52hW3eLZFFMbzm8ldAD-gkhtoW8dxFgc5E",
+    p: "8UwDaMvVDujPiYSTy3Gu_uT0ueA60bWhBJWdCDPJX0jPkg1wvj31eyOgb9LyJTMdUTDsXhWppxzC7ZZReBHm0UY3v-7yG3d5Bb0iy1DqPZk742iA-QA2TwWfyFoGY5PXagk-lysRnJxpGRwHwnsYJR705MTVay7uNYhkacW8c9j-ldR_tC4J3Nq05BmtytBE0E5RIMlLpNqT4EbS-Wpx5ZrNRr26kzGZKYb1L7qiXF4V8UAcSxWcjiWRX3VrcbdAsY-YnXPg4SjR5R2xmAOc1t_QexI_i3-FaWfEucwoNBjYRC8DL77bHQix0l-8RbRYIRsNLBmsvN5cqWyO6ZnUtw",
+    q: "xjiGvkzTC2VaSGnSZd01DsfekWb5dKky0spQdN1vpx6sFLmWMxRc_yOquAuDOMK3LXoWZZLtEHCsI7CJBUl6IK3Tn2zESq7RDRKs0kfpqWX5zjsZ1biyCD1rc9nq0UY1z2mgbU2JM8hb9PANgsJC5lzkIpfqkoFec9yDgRic4d-w_OQuo-ti2NKMln0VHg0_LJmy385_qn1Mny_CBOPGL3tvHajh6dUx5teKKMtzFHriprsXid2e5rBLYNOrp6L_r-WKI5f5VeJD13HIGmYnExJBUCgjAKykx8Mm0myJR56ZmONtVasLZE-e0LXapWFrE0W5t_hYeMrSudt64EHOuQ",
+    dp: "zIa_xQ4w88hGUav8kk80I33yKbN0Z9jqOLaQOimbIJbYylV2IOrnro6OKPrGoN1oli8_yqfV-34Xg8cMGxgha3V3P8rLkJh-Dm04ltlpEvlVl_Y2i9iwL972hp44GCNyTcC0OvIYpYS2WMA3m5M27hAFR_vHYmiPJPUNF9KxYAioElviOtljJr6C4W0asHREP8SCY6X75ioXedzOavbcv9-s669Z-_XoexiXrvMlN-HP-4N59_LDloElbaJbhjHsNhUfKSbVkERHVUsMA2vcfw2K6yaWkilu7d81Er-HvFDqzzCCJPBDTaLXBxh6vyKUKMuDKMRCdHyOUlVf9YWclQ",
+    dq: "GoHcov4rCs8W77AXDsAyJDPeM5uNqGgn_8BGWhpyn-qeIHdg-puyg_wFDG-dsK15SX-WFyc6xIQMwQkOicJ1roEQV7V32nTeR91Ddytet-SHL2j_33C_fhKYl_mASVQWRhJd_b_spRwaD_s6E05fG-c4Ktgd6lGai-vlOhJMiHgddvQcuJb1tQETA9zeQhKLbC9xmDRJJkdzQ6ZjT7wV-KuNBG5dJ6P29GPGegYa8ZYtURab4zfb1AWnTt9_iP9nKeKMQo5ELZQAdoMku0MF3qsGSO3VIHX14zDZtDIHeahf6e4f5ODmuRdcqZRoFM2eQAmG-G8hhaW54FjVab_jIQ",
+    qi: "UFkuInLeAR4pKkgXJM82g4hvgu4wNeDuhvbcowUlUptvyb62mAhuPdQZeiLiFhknHUcWxryvrcrFlY5bSl_pMY7dYFOwgot-6BQ_OZhbUEm_7thkrD_GZ1ZkzhEOJIhWMOh7jpT7Q0dzNtplXo6yUJ7iJjc-znz--kT9i_2wWCvjBmM6Vci3eWYkLRI4trArGdBurk_l9GmB6tgdsUsZ0aEcPUVWaV5e2y88EVC6Z-vZEllfldQjG1KkuAUx82hX0mZW0OUiWdirMPecpfVDg9c_T0b3f-nOpGpDWsKFxKDXtVBELmBA1CT6cnMtcYyTpGkfM4m09DBjRRCRtOAzjA",
+  };
+  const address = await arweave.wallets.jwkToAddress(key);
+  console.log(address);
+
+  let data = fs.readFileSync("./my-image.jpg");
+  let transaction = await arweave.createTransaction(
+    {
+      data: data,
+    },
+    key
+  );
+
+  await arweave.transactions.sign(transaction, key);
+
+  const response = await arweave.transactions.post(transaction);
+  console.log(transaction);
+}
+a();
